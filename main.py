@@ -8,11 +8,15 @@ WIDTH, HEIGHT = 720, 720
 # Colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-SELECTION_BG = (100, 100, 100)
+SELECTION_BG = (50, 205, 50)
+LIME = (50, 205, 50)
 
 # alinment variables
 LEFTSPACING = 10
 TOPSPACING = 10
+
+# import a font from a directory and load it
+nostOutlinePath = "fonts/nostOutline.otf"
 
 # Initialize screen and clock
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -24,6 +28,7 @@ font_large = pygame.font.SysFont(None, 48)
 font_small = pygame.font.SysFont(None, 36)
 pages = ['Home', 'Page 1', 'Page 2', 'Page 3', 'Page 4']
 selected_item = 1
+
 
 running = True
 while running:
@@ -42,19 +47,19 @@ while running:
 
     # Draw UI elements
     # Draw the page title (always at top)
-    text_title = font_large.render(pages[0], True, WHITE)
+    text_title = font_large.render(pages[0], True, LIME)
     screen.blit(text_title, (LEFTSPACING, TOPSPACING + 20 - text_title.get_height()/2))
 
     # Draw other pages below the title
     for i, page in enumerate(pages[1:], start=1):
         if i == selected_item:
-            text_bg = pygame.Surface((WIDTH, font_small.get_height()))
+            text_bg = pygame.Surface((WIDTH, font_small.get_height() + 4))
             text_bg.fill(SELECTION_BG)
             screen.blit(text_bg, (0, TOPSPACING + 50 + (i - 1) * 40))
             
             text = font_small.render(page, True, BLACK, SELECTION_BG)
         else:
-            text = font_small.render(page, True, WHITE)
+            text = font_small.render(page, True, LIME)
         
         screen.blit(text, (LEFTSPACING, TOPSPACING + 50 + (i - 1) * 40))
 
