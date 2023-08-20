@@ -8,15 +8,24 @@ WIDTH, HEIGHT = 720, 720
 # Colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-SELECTION_BG = (50, 205, 50)
 LIME = (50, 205, 50)
+SELECTION_BG = LIME
+
+SELECTION_INDICATOR = "/////////////////////////////////////"
 
 # alinment variables
-LEFTSPACING = 10
-TOPSPACING = 10
+LEFTSPACING = 20
+TOPSPACING = 40
+menuPadding = 60
+menuSpacing = 80
 
 # import a font from a directory and load it
-nostOutlinePath = "fonts/nostOutline.otf"
+largeFontSize = 90
+smallFontSize = 20
+nostOutline = pygame.font.Font('fonts/Outline/nostOutline.otf', largeFontSize)
+nostReg = pygame.font.Font('fonts/Alien/nostReg.otf', smallFontSize)
+
+
 
 # Initialize screen and clock
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -47,21 +56,23 @@ while running:
 
     # Draw UI elements
     # Draw the page title (always at top)
-    text_title = font_large.render(pages[0], True, LIME)
+    text_title = nostOutline.render(pages[0], True, LIME)
     screen.blit(text_title, (LEFTSPACING, TOPSPACING + 20 - text_title.get_height()/2))
 
     # Draw other pages below the title
+
+
+# Inside your main loop where you draw the pages
     for i, page in enumerate(pages[1:], start=1):
+        display_text = page  # Default text to display is just the page name
+
+    # If this is the selected item, prepend and append the selection slashes
         if i == selected_item:
-            text_bg = pygame.Surface((WIDTH, font_small.get_height() + 4))
-            text_bg.fill(SELECTION_BG)
-            screen.blit(text_bg, (0, TOPSPACING + 50 + (i - 1) * 40))
-            
-            text = font_small.render(page, True, BLACK, SELECTION_BG)
-        else:
-            text = font_small.render(page, True, LIME)
-        
-        screen.blit(text, (LEFTSPACING, TOPSPACING + 50 + (i - 1) * 40))
+            display_text = "/ " + page + " " + SELECTION_INDICATOR
+
+        text = nostReg.render(display_text, True, LIME)
+        screen.blit(text, (LEFTSPACING + menuPadding, TOPSPACING + menuSpacing + (i - 1) * 40))
+
 
     pygame.display.flip()
 
