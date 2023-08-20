@@ -1,7 +1,12 @@
 import pygame
+import json
+from utils.display_utils import type_out_text, fontSpeed
+# Import your page functions when you've defined them, e.g.:
+# from pages.home_page import home_function
 
 pygame.init()
 
+# Constants and Variables Initialization
 # Window dimensions
 WIDTH, HEIGHT = 720, 720
 
@@ -10,45 +15,34 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 LIME = (50, 205, 50)
 SELECTION_BG = LIME
-
 SELECTION_INDICATOR = "/////////////////////////////////////"
 
-# alinment variables
-LEFTSPACING = 20
-TOPSPACING = 40
-menuPadding = 60
-menuSpacing = 80
+# Alignment variables
+LEFTSPACING = 20 # Padding from left side of screen to text for titles
+TOPSPACING = 40 # Padding from top of screen to text for titles
+menuPadding = 60 # Padding from left side of screen to menu text
+menuSpacing = 40 # Spacing between menu items
+menuFirstItem = 60 # Vertical position of first menu item
 
-# import a font from a directory and load it
+# Fonts
 largeFontSize = 90
 smallFontSize = 20
 nostOutline = pygame.font.Font('fonts/Outline/nostOutline.otf', largeFontSize)
 nostReg = pygame.font.Font('fonts/Alien/nostReg.otf', smallFontSize)
-fontSpeed = 10
 
-# Initialize screen and clock
+
+# Screen and Clock Initialization
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("JVC 3050 Modernization Prototype")
 clock = pygame.time.Clock()
 
-# UI Elements and Variables
-font_large = pygame.font.SysFont(None, 48)
-font_small = pygame.font.SysFont(None, 36)
-pages = ['Home', 'Page 1', 'Page 2', 'Page 3', 'Page 4']
+# Loading menu from JSON
+with open('menu.json', 'r') as file:
+    menu = json.load(file)
+
 selected_item = 1
+typed_out = False
 
-def type_out_text(surface, font, text, color, position, speed=fontSpeed):
-    """Display text one character at a time at a given speed."""
-    typed_text = ''
-    x, y = position
-    for char in text:
-        typed_text += char
-        rendered_text = font.render(typed_text, True, color)
-        surface.blit(rendered_text, (x, y))
-        pygame.display.flip()
-        pygame.time.wait(speed)
-
-typed_out = False # This is a flag to indicate whether or not the text has been typed out
 running = True
 while running:
     for event in pygame.event.get():
@@ -57,47 +51,41 @@ while running:
 
         # Navigate using up and down arrow keys
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DOWN and selected_item < len(pages) - 1:
+            if event.key == pygame.K_DOWN and selected_item < len(menu) - 1:
                 selected_item += 1
             elif event.key == pygame.K_UP and selected_item > 1:
                 selected_item -= 1
 
     screen.fill(BLACK)
 
-    # Draw UI elements
     # Draw the page title (always at top)
-    text_title = nostOutline.render(pages[0], True, LIME)
+    text_title = nostOutline.render(menu[0]["title"], True, LIME)
     screen.blit(text_title, (LEFTSPACING, TOPSPACING + 20 - text_title.get_height()/2))
 
-    # If text hasn't been typed out yet, do it
+    # Check if text has been typed out
     if not typed_out:
-        for i, page in enumerate(pages[1:], start=1):
-            display_text = page
+        for i, page in enumerate(menu[1:], start=1):
+            display_text = page["title"]
 
             if i == selected_item:
-                display_text =  "/// " + page + " " + SELECTION_INDICATOR
+                display_text =  "/// " + page["title"] + " " + SELECTION_INDICATOR
 
-            type_out_text(screen, nostReg, display_text, LIME, (LEFTSPACING + menuPadding, TOPSPACING + menuSpacing + (i - 1) * 40))
+            type_out_text(screen, nostReg, display_text, LIME, (LEFTSPACING + menuPadding, menuFirstItem + menuSpacing + (i - 1) * menuSpacing), fontSpeed)
         
-        typed_out = True  # Set flag to True so we don't type out text again
+        typed_out = True
 
-    # If text has already been typed out, just blit it as usual
+    # If text has been typed out, display normally
     else:
-        for i, page in enumerate(pages[1:], start=1):
-            display_text = page
+        for i, page in enumerate(menu[1:], start=1):
+            display_text = page["title"]
 
             if i == selected_item:
-                display_text = "/// " + page + " " + SELECTION_INDICATOR
+                display_text = "/// " + page["title"] + " " + SELECTION_INDICATOR
 
             text = nostReg.render(display_text, True, LIME)
-            screen.blit(text, (LEFTSPACING + menuPadding, TOPSPACING + menuSpacing + (i - 1) * 40))
-
-        #below is the non typed text readout
-        #screen.blit(text, (LEFTSPACING + menuPadding, TOPSPACING + menuSpacing + (i - 1) * 40))
-
+            screen.blit(text, (LEFTSPACING + menuPadding, menuFirstItem + menuSpacing + (i - 1) * menuSpacing))
 
     pygame.display.flip()
-
     clock.tick(30)
 
 pygame.quit()
