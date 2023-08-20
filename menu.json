@@ -1,0 +1,22 @@
+[
+    {
+        "title": "Home",
+        "action": "home_function"
+    },
+    {
+        "title": "Page 1",
+        "action": "page1_function"
+    },
+    {
+        "title": "Page 2",
+        "action": "page2_function"
+    },
+    {
+        "title": "Page 3",
+        "action": "page3_function"
+    },
+    {
+        "title": "poo 4",
+        "action": "page4_function"
+    }
+]
