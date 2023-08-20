@@ -1,104 +1,71 @@
-import pygame
+import curses
 import json
-from utils.display_utils import type_out_text, fontSpeed
-# Import your page functions when you've defined them, e.g.:
-# from pages.home_page import home_function
-
-pygame.init()
+from handlers import internet_radio, spotify, casting, podcasts
 
 
-# Constants and Variables Initialization
-# Window dimensions
-WIDTH, HEIGHT = 720, 720
-
-# Colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-LIME = (50, 205, 50)
-SELECTION_BG = LIME
-SELECTION_INDICATOR = "/////////////////////////////////////"
-
-# Alignment variables
-LEFTSPACING = 20 # Padding from left side of screen to text for titles
-TOPSPACING = 40 # Padding from top of screen to text for titles
-menuPadding = 60 # Padding from left side of screen to menu text
-menuSpacing = 40 # Spacing between menu items
-menuFirstItem = 60 # Vertical position of first menu item
-
-y_position = TOPSPACING  # You can adjust this initial position as needed
-spacing_between_lines = 40  # Adjust based on your design needs
-
-
-# Fonts
-largeFontSize = 90
-smallFontSize = 20
-nostOutline = pygame.font.Font('fonts/Outline/nostOutline.otf', largeFontSize)
-nostReg = pygame.font.Font('fonts/Alien/nostReg.otf', smallFontSize)
-
-
-
-
-# Screen and Clock Initialization
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("JVC 3050 Modernization Prototype")
-clock = pygame.time.Clock()
-
-# Loading menu from JSON
+# Load the JSON menu
 with open('menu.json', 'r') as file:
-    menu = json.load(file)
-print(menu)
-home_content = menu[0]["content"] # This is the content for the home page
-y_position = TOPSPACING  # You can adjust this initial position as needed
-spacing_between_lines = 40  # Adjust based on your design needs
+    menu_data = json.load(file)
+    main_menu_items = menu_data["main_menu"]
 
-selected_item = 1
-typed_out = False
+# Define some padding
+pad_top = 5
+pad_left = 10
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
 
-        # Navigate using up and down arrow keys
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DOWN and selected_item < len(menu) - 1:
-                selected_item += 1
-            elif event.key == pygame.K_UP and selected_item > 1:
-                selected_item -= 1
+# The dispatch table mapping action names to functions
+action_dispatch = {
+    "internet_radio": internet_radio,
+    "spotify": spotify,
+    "casting": casting,
+    "podcasts": podcasts,
+    "exit_program": exit
+}
 
-    screen.fill(BLACK)
+ascii_art = """
+    _   _           _       
+   | | | |         | |      
+   | |_| | __ _ ___| |_ ___ 
+   |  _  |/ _` / __| __/ _ \\
+   | | | | (_| \__ \ ||  __/
+   \_| |_/\__,_|___/\__\___|
+"""
 
-    # Draw the page title (always at top)
-    text_title = nostOutline.render(menu[0]["title"], True, LIME)
-    screen.blit(text_title, (LEFTSPACING, TOPSPACING + 20 - text_title.get_height()/2))
+def main(stdscr):
+    curses.start_color()
+    curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    curses.curs_set(0)
 
-    # Check if text has been typed out
-    if not typed_out:
-        for i, page in enumerate(menu[1:], start=1):
-            display_text = page["title"]
+    current_row = 0
 
-            if i == selected_item:
-                display_text =  "/// " + page["title"] + " " + SELECTION_INDICATOR
+    while True:
+        stdscr.clear()
+        stdscr.bkgd(curses.color_pair(1))
 
-            type_out_text(screen, nostReg, display_text, LIME, (LEFTSPACING + menuPadding, menuFirstItem + menuSpacing + (i - 1) * menuSpacing), fontSpeed)
-            print(home_content)
-
+        # Display ASCII art
+        for line_idx, line in enumerate(ascii_art.split('\n')):
+            stdscr.addstr(line_idx, pad_left, line, curses.color_pair(1))
         
-        typed_out = True
+        menu_start_position = len(ascii_art.split('\n'))
 
-    # If text has been typed out, display normally
-    else:
-        for i, page in enumerate(menu[1:], start=1):
-            display_text = page["title"]
+        # Display menu items below the ASCII art
+        for idx, item in enumerate(main_menu_items):
+            if idx == current_row:
+                stdscr.addstr(pad_top + menu_start_position + idx, pad_left, item["name"], curses.A_REVERSE | curses.color_pair(1))
+            else:
+                stdscr.addstr(pad_top + menu_start_position + idx, pad_left, item["name"], curses.color_pair(1))
 
-            if i == selected_item:
-                display_text = "/// " + page["title"] + " " + SELECTION_INDICATOR
+        key = stdscr.getch()
+        
 
-            text = nostReg.render(display_text, True, LIME)
-            screen.blit(text, (LEFTSPACING + menuPadding, menuFirstItem + menuSpacing + (i - 1) * menuSpacing))
 
-    pygame.display.flip()
-    clock.tick(30)
+        if key == curses.KEY_UP and current_row > 0:
+            current_row -= 1
+        elif key == curses.KEY_DOWN and current_row < len(main_menu_items) - 1:
+            current_row += 1
+        elif key == curses.KEY_ENTER or key == 10:  # 10 represents the Enter key
+            selected_action = main_menu_items[current_row]["action"]
+            if selected_action in action_dispatch:
+                action_dispatch[selected_action]()
 
-pygame.quit()
+curses.wrapper(main)
