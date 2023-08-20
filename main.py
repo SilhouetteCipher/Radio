@@ -6,6 +6,7 @@ from utils.display_utils import type_out_text, fontSpeed
 
 pygame.init()
 
+
 # Constants and Variables Initialization
 # Window dimensions
 WIDTH, HEIGHT = 720, 720
@@ -24,11 +25,17 @@ menuPadding = 60 # Padding from left side of screen to menu text
 menuSpacing = 40 # Spacing between menu items
 menuFirstItem = 60 # Vertical position of first menu item
 
+y_position = TOPSPACING  # You can adjust this initial position as needed
+spacing_between_lines = 40  # Adjust based on your design needs
+
+
 # Fonts
 largeFontSize = 90
 smallFontSize = 20
 nostOutline = pygame.font.Font('fonts/Outline/nostOutline.otf', largeFontSize)
 nostReg = pygame.font.Font('fonts/Alien/nostReg.otf', smallFontSize)
+
+
 
 
 # Screen and Clock Initialization
@@ -39,6 +46,10 @@ clock = pygame.time.Clock()
 # Loading menu from JSON
 with open('menu.json', 'r') as file:
     menu = json.load(file)
+print(menu)
+home_content = menu[0]["content"] # This is the content for the home page
+y_position = TOPSPACING  # You can adjust this initial position as needed
+spacing_between_lines = 40  # Adjust based on your design needs
 
 selected_item = 1
 typed_out = False
@@ -71,6 +82,8 @@ while running:
                 display_text =  "/// " + page["title"] + " " + SELECTION_INDICATOR
 
             type_out_text(screen, nostReg, display_text, LIME, (LEFTSPACING + menuPadding, menuFirstItem + menuSpacing + (i - 1) * menuSpacing), fontSpeed)
+            print(home_content)
+
         
         typed_out = True
 

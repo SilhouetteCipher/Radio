@@ -1,7 +1,29 @@
 [
     {
         "title": "Home",
-        "action": "home_function"
+        "action": "home_function",
+        "content": [
+            "JVC 3050 TERMINAL INTERFACE v1.2.0\n",
+            "---------------------------------------\n",
+            "Booting core systems...\n",
+            "[OK]    Initializing radio transceivers...\n",
+            "[OK]    Establishing data links...\n",
+            "[WARN]  Satellite connection unstable, reverting to terrestrial links...\n",
+            "[OK]    Engaging safety protocols...\n",
+            "Welcome, Operator!",
+            "System status:",
+            "- Radio Channels: 89 active",
+            "- Data Throughput: 4.5 Mbps",
+            "- System Temp: 32°C",
+            "- Last Diagnostic Run: 3 days ago",
+            "Available commands:",
+            "- RADIO_SCAN",
+            "- SYS_DIAGNOSTICS",
+            "- LINK_REBOOT",
+            "- SHUTDOWN",
+            "For more information, type HELP followed by command name.",
+            "JVC 3050/>"
+        ]
     },
     {
         "title": "Page 1",
