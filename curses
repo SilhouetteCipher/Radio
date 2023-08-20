@@ -1,0 +1,43 @@
+import curses
+
+def main(stdscr):
+    curses.curs_set(0)  # Hide the cursor
+    current_row = 0
+    menu_items = ["Play Spotify", "Play Internet Radio", "Exit"]
+
+    # Define some padding
+    pad_top = 5
+    pad_left = 10
+
+    while True:
+        stdscr.clear()
+
+        # Displaying the menu items
+        for idx, item in enumerate(menu_items):
+            y_position = pad_top + idx
+            x_position = pad_left
+            if idx == current_row:
+                stdscr.addstr(idx, 0, item, curses.A_REVERSE)
+            else:
+                stdscr.addstr(idx, 0, item)
+
+        key = stdscr.getch()  # Listen for a keyboard key press
+
+        if key == curses.KEY_UP and current_row > 0:
+            current_row -= 1
+        elif key == curses.KEY_DOWN and current_row < len(menu_items) - 1:
+            current_row += 1
+        elif key == curses.KEY_ENTER or key in [10, 13]:  # Both 10 and 13 correspond to Enter on different systems
+            if current_row == len(menu_items) - 1:
+                break
+            if current_row == 0:
+                # Play Spotify
+                pass
+            elif current_row == 1:
+                # Play Internet Radio
+                pass
+        elif key == curses.KEY_BACKSPACE:
+            # Handle back action, perhaps return to a previous menu or take some other action
+            pass
+
+curses.wrapper(main)
