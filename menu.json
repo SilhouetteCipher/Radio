@@ -6,6 +6,21 @@
       {"name": "Casting", "action": "casting"},
       {"name": "Podcasts", "action": "podcasts"},
       {"name": "Exit", "action": "exit_program"}
+    ],
+
+    "spotify": [
+      {"name": "Back", "action" : "back"},
+      {"name": "Playlists", "action": "playlists"},
+      {"name": "Exit", "action": "exit_program"}
+    ],
+
+    "internet_radio": [
+      {"name": "Back", "action" : "back"},
+      {"name": "Favorites", "action": "favorites"},
+      {"name": "Stations", "action": "stations"},
+      {"name": "Playlists", "action": "playlists"},
+      {"name": "Exit", "action": "exit_program"}
     ]
-  }
+  } 
+  
   
