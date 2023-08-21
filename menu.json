@@ -1,5 +1,6 @@
 {
     "main_menu": [
+      {"name": "Back", "action" : "back"},
       {"name": "Internet Radio", "action": "internet_radio"},
       {"name": "Spotify", "action": "spotify"},
       {"name": "Casting", "action": "casting"},

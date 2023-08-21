@@ -22,6 +22,11 @@ def load_ascii_art(filename):
     with open(filename, 'r') as file:
         return file.read()
 
+# define a empty function called back
+def back():
+    pass
+
+
 def type_out(stdscr, y, x, text, color=None, delay=0.01):
     for char in text:
         if color:
